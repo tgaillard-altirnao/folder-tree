@@ -51,11 +51,11 @@ class FolderTreeTest {
     public void test5() {
         Folder root = folderTree.buildTree(List.of("/", "/b", "/c", "/d", "/d/e", "/d/e/f"), List.of("/a/b", "/b/b", "/d/e/f")).get();
 
-        Folder nodeD = root.getChilds().get(1);
+        Folder nodeD = getChildByName(root, "d");
         assertThat(nodeD.getName()).isEqualTo("/d");
-        Folder nodeDE = nodeD.getChilds().get(0);
+        Folder nodeDE = getChildByName(nodeD, "e");
         assertThat(nodeDE.getName()).isEqualTo("/d/e");
-        Folder nodeDEF = nodeDE.getChilds().get(0);
+        Folder nodeDEF = getChildByName(nodeDE, "f");
         assertThat(nodeDEF.getName()).isEqualTo("/d/e/f");
     }
 
