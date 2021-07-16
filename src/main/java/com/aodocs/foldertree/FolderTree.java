@@ -1,5 +1,6 @@
 package com.aodocs.foldertree;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,10 @@ public class FolderTree {
 
     private void buildParent(Folder item, List<Folder> items) {
         getParentName(item.getName()).ifPresent((parentName) -> {
-            Optional<Folder> parentOpt = findByName(items, parentName);
+            Optional<Folder> parentOpt = findFolderByName(items, parentName);
             parentOpt.orElseGet(() -> {
                 Folder createdParent = new Folder(parentName);
-                List<Folder> childs = new LinkedList<>();
-                createdParent.setChilds(childs);
+                createdParent.setChilds(new LinkedList<>());
                 buildParent(createdParent, items);
                 items.add(createdParent);
                 return createdParent;
@@ -35,7 +35,7 @@ public class FolderTree {
 
     }
 
-    private Optional<Folder> findByName(List<Folder> items, String folderName) {
+    private Optional<Folder> findFolderByName(List<Folder> items, String folderName) {
         return items.stream().filter((folder) -> folder.getName().equals(folderName)).findFirst();
     }
 
@@ -48,14 +48,6 @@ public class FolderTree {
     }
 
     private Optional<String> getParentName(String folderName) {
-        if ("/".equals(folderName)) {
-            return Optional.empty();
-        }
-
-        if (folderName.chars().filter((character) -> character == '/').count() == 1) {
-            return Optional.of("/");
-        }
-
-        return Optional.of(folderName.substring(0, folderName.lastIndexOf("/")));
+        return Optional.ofNullable(new File(folderName).getParent());
     }
 }
